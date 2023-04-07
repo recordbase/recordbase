@@ -334,7 +334,7 @@ func (t *implClient) MapGet(ctx context.Context, in *recordpb.MapGetRequest) (*r
 
 }
 
-func (t *implClient) MapPut(ctx context.Context, in *recordpb.MapPutRequest) (*recordpb.MapValue, error) {
+func (t *implClient) MapPut(ctx context.Context, in *recordpb.MapPutRequest) (err error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	handle := t.addCancelFn(cancel)
@@ -344,10 +344,12 @@ func (t *implClient) MapPut(ctx context.Context, in *recordpb.MapPutRequest) (*r
 		cancel()
 	}()
 
-	return t.client.MapPut(ctx, in)
+	_, err = t.client.MapPut(ctx, in)
+	return err
+
 }
 
-func (t *implClient) MapRemove(ctx context.Context, in *recordpb.MapRemoveRequest) (*recordpb.MapValue, error) {
+func (t *implClient) MapRemove(ctx context.Context, in *recordpb.MapRemoveRequest) (err error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	handle := t.addCancelFn(cancel)
@@ -357,7 +359,9 @@ func (t *implClient) MapRemove(ctx context.Context, in *recordpb.MapRemoveReques
 		cancel()
 	}()
 
-	return t.client.MapRemove(ctx, in)
+	_, err = t.client.MapRemove(ctx, in)
+	return err
+
 }
 
 func (t *implClient) MapRange(c context.Context, in *recordpb.MapRangeRequest) (entries <-chan MapEntryEvent, cancel func(), err error) {

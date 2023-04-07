@@ -118,12 +118,12 @@ type Client interface {
 	//
 	// Put map value associated with the record. Returns old value.
 	//
-	MapPut(ctx context.Context, in *recordpb.MapPutRequest) (*recordpb.MapValue, error)
+	MapPut(ctx context.Context, in *recordpb.MapPutRequest) error
 
 	//
 	// Remove map value associated with the record. Returns old value.
 	//
-	MapRemove(ctx context.Context, in *recordpb.MapRemoveRequest) (*recordpb.MapValue, error)
+	MapRemove(ctx context.Context, in *recordpb.MapRemoveRequest) error
 
 	//
 	// Scan all map key-value pairs
