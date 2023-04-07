@@ -18,7 +18,6 @@ import (
 	"context"
 	"github.com/codeallergy/glue"
 	"github.com/recordbase/recordpb"
-	"google.golang.org/grpc"
 	"reflect"
 )
 
@@ -89,7 +88,12 @@ type Client interface {
 	//
 	// Download File
 	//
-	DownloadFile(ctx context.Context, in *recordpb.DownloadFileRequest, opts ...grpc.CallOption)  (entries <- chan FileContentEvent, cancel func(), err error)
+	DownloadFile(ctx context.Context, in *recordpb.DownloadFileRequest) (entries <- chan FileContentEvent, cancel func(), err error)
+
+	//
+	// Delete File
+	//
+	DeleteFile(ctx context.Context, in *recordpb.DeleteFileRequest) error
 
 	//
 	// Scan users

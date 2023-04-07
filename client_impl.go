@@ -199,7 +199,7 @@ func (t *implClient) UploadFile(c context.Context) (chan <- *recordpb.UploadFile
 
 }
 
-func (t *implClient) DownloadFile(c context.Context, in *recordpb.DownloadFileRequest, opts ...grpc.CallOption)  (entries <- chan FileContentEvent, cancel func(), err error) {
+func (t *implClient) DownloadFile(c context.Context, in *recordpb.DownloadFileRequest)  (entries <- chan FileContentEvent, cancel func(), err error) {
 
 	ctx, cancel := context.WithCancel(c)
 	handle := t.addCancelFn(cancel)
@@ -237,6 +237,20 @@ func (t *implClient) DownloadFile(c context.Context, in *recordpb.DownloadFileRe
 		cancel()
 	},nil
 
+}
+
+func (t *implClient) DeleteFile(ctx context.Context, in *recordpb.DeleteFileRequest) error {
+
+	ctx, cancel := context.WithCancel(ctx)
+	handle := t.addCancelFn(cancel)
+
+	defer func() {
+		t.removeCancelFn(handle)
+		cancel()
+	}()
+
+	_, err := t.client.DeleteFile(ctx, in)
+	return  err
 }
 
 func (t *implClient) Scan(c context.Context, in *recordpb.ScanRequest) (entries <-chan RecordEntryEvent, cancel func(), err error) {
