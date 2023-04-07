@@ -18,6 +18,7 @@ import (
 	"context"
 	"github.com/codeallergy/glue"
 	"github.com/recordbase/recordpb"
+	"google.golang.org/grpc"
 	"reflect"
 )
 
@@ -34,6 +35,11 @@ type RecordEntryEvent struct {
 
 type MapEntryEvent struct {
 	Entry      *recordpb.MapEntry
+	Err        error
+}
+
+type FileContentEvent struct {
+	Content    *recordpb.FileContent
 	Err        error
 }
 
@@ -74,6 +80,16 @@ type Client interface {
 	// Update user attributes
 	//
 	Update(ctx context.Context, in *recordpb.UpdateRequest) error
+
+	//
+	// Upload File
+	//
+	UploadFile(c context.Context) (sink chan <- *recordpb.UploadFileContent, _ <- chan error)
+
+	//
+	// Download File
+	//
+	DownloadFile(ctx context.Context, in *recordpb.DownloadFileRequest, opts ...grpc.CallOption)  (entries <- chan FileContentEvent, cancel func(), err error)
 
 	//
 	// Scan users

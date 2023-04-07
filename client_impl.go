@@ -162,6 +162,83 @@ func (t *implClient) Update(ctx context.Context, in *recordpb.UpdateRequest) err
 	return  err
 }
 
+func (t *implClient) UploadFile(c context.Context) (chan <- *recordpb.UploadFileContent, <- chan error) {
+
+	errCh := make(chan error)
+
+	ctx, cancel := context.WithCancel(c)
+	handle := t.addCancelFn(cancel)
+
+	stream, errCall := t.client.UploadFile(ctx)
+	if errCall != nil {
+		t.removeCancelFn(handle)
+		errCh <- errCall
+		return nil, errCh
+	}
+
+	sink := make(chan *recordpb.UploadFileContent)
+
+	go func() {
+
+		for content := range sink {
+			err := stream.Send(content)
+			if err != nil {
+				errCh <- err
+				return
+			}
+		}
+
+		err := stream.CloseSend()
+		if err != nil {
+			errCh <- err
+		}
+
+	}()
+
+	return sink, errCh
+
+}
+
+func (t *implClient) DownloadFile(c context.Context, in *recordpb.DownloadFileRequest, opts ...grpc.CallOption)  (entries <- chan FileContentEvent, cancel func(), err error) {
+
+	ctx, cancel := context.WithCancel(c)
+	handle := t.addCancelFn(cancel)
+
+	stream, err := t.client.DownloadFile(ctx, in)
+
+	if err != nil {
+		t.removeCancelFn(handle)
+		return nil, nil, err
+	}
+
+	resultCh := make(chan FileContentEvent)
+
+	go func() {
+
+		defer func() {
+			t.removeCancelFn(handle)
+			close(resultCh)
+		}()
+
+		for ctx.Err() == nil {
+			entry, err := stream.Recv()
+			if err != nil {
+				if err != io.EOF {
+					resultCh <- FileContentEvent { Err: err }
+				}
+				break
+			}
+			resultCh <- FileContentEvent { Content: entry }
+		}
+	}()
+
+	return resultCh, func() {
+		t.removeCancelFn(handle)
+		cancel()
+	},nil
+
+}
+
 func (t *implClient) Scan(c context.Context, in *recordpb.ScanRequest) (entries <-chan RecordEntryEvent, cancel func(), err error) {
 
 	ctx, cancel := context.WithCancel(c)
