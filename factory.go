@@ -17,7 +17,7 @@ package recordbase
 import (
 	"context"
 	"crypto/tls"
-	"github.com/codeallergy/raftpb"
+	"github.com/openraft/raftpb"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"strings"

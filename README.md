@@ -21,7 +21,7 @@ still need to restart clients (applications) to get benefits of newcomers. But i
 synchronized by Raft protocol, therefore please restart clients when all updates are propagated.
 
 ```
-rb := recordbase.NewClient(context.Background(), "multi://127.0.0.1:5555,127.0.0.1:7777", MY_API_KEY, optTlsConfig)
+rb := recordbase.NewClient(context.Background(), "127.0.0.1:5555,127.0.0.1:7777", MY_API_KEY, tlsConfigOpt)
 defer rb.Destroy()
 ```
 
