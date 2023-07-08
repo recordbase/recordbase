@@ -42,7 +42,7 @@ func Create(conn *grpc.ClientConn) Client {
 	}
 }
 
-func (t *implClient) GetCounts(ctx context.Context, in *recordpb.TenantRequest) (*recordpb.Counts, error) {
+func (t *implClient) GetInfo(ctx context.Context, in *recordpb.TenantRequest) (*recordpb.Info, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 
@@ -52,7 +52,7 @@ func (t *implClient) GetCounts(ctx context.Context, in *recordpb.TenantRequest) 
 		cancel()
 	}()
 
-	return t.client.GetCounts(ctx, in)
+	return t.client.GetInfo(ctx, in)
 }
 
 func (t *implClient) Lookup(ctx context.Context, in *recordpb.LookupRequest) (*recordpb.RecordEntry, error) {
@@ -401,6 +401,50 @@ func (t *implClient) MapRange(c context.Context, in *recordpb.MapRangeRequest) (
 		t.removeCancelFn(handle)
 		cancel()
 	},nil
+
+}
+
+func (t *implClient) BinGet(ctx context.Context, in *recordpb.BinGetRequest) (*recordpb.BinEntry, error) {
+
+	ctx, cancel := context.WithCancel(ctx)
+
+	handle := t.addCancelFn(cancel)
+	defer func() {
+		t.removeCancelFn(handle)
+		cancel()
+	}()
+
+	return t.client.BinGet(ctx, in)
+
+}
+
+func (t *implClient) BinPut(ctx context.Context, in *recordpb.BinPutRequest) (err error) {
+
+	ctx, cancel := context.WithCancel(ctx)
+	handle := t.addCancelFn(cancel)
+
+	defer func() {
+		t.removeCancelFn(handle)
+		cancel()
+	}()
+
+	_, err = t.client.BinPut(ctx, in)
+	return err
+
+}
+
+func (t *implClient) BinRemove(ctx context.Context, in *recordpb.BinRemoveRequest) (err error) {
+
+	ctx, cancel := context.WithCancel(ctx)
+	handle := t.addCancelFn(cancel)
+
+	defer func() {
+		t.removeCancelFn(handle)
+		cancel()
+	}()
+
+	_, err = t.client.BinRemove(ctx, in)
+	return err
 
 }
 

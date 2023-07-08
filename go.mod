@@ -8,7 +8,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/openraft/raftpb v1.1.0
 	github.com/pkg/errors v0.9.1
-	github.com/recordbase/recordpb v1.1.0
+	github.com/recordbase/recordpb v1.1.1
 	go.uber.org/atomic v1.10.0
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1

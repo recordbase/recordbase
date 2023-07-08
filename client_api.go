@@ -48,7 +48,7 @@ type Client interface {
 	//
 	// Gets metadata about using attributes
 	//
-	GetCounts(ctx context.Context, in *recordpb.TenantRequest) (*recordpb.Counts, error)
+	GetInfo(ctx context.Context, in *recordpb.TenantRequest) (*recordpb.Info, error)
 
 	//
 	// Quick user lookup request
@@ -129,6 +129,22 @@ type Client interface {
 	// Scan all map key-value pairs
 	//
 	MapRange(ctx context.Context, in *recordpb.MapRangeRequest) (entries <- chan MapEntryEvent, cancel func(), err error)
+
+	//
+	// Get bin value from the record
+	//
+	BinGet(ctx context.Context, in *recordpb.BinGetRequest) (*recordpb.BinEntry, error)
+
+	//
+	// Put bin value to the record
+	//
+	BinPut(ctx context.Context, in *recordpb.BinPutRequest) error
+
+	//
+	// Remove bin value from the record
+	//
+	BinRemove(ctx context.Context, in *recordpb.BinRemoveRequest) error
+
 
 }
 
