@@ -9,7 +9,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/openraft/raftpb"
+	"github.com/sprintframework/raftpb"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"strings"
